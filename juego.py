@@ -131,5 +131,120 @@ class JuegoCazadorJAMG:
     """
 
     def __init__(self):
-        pass
+        self.puntaje_totalJAMG = 0
 
+    
+    def juego(self):
+        """
+        Método utilizado para gestionar la lǵoica de una ronda del juego.
+        Solicita la longitud, genera la contraseña, determina el cofre, 
+        actualiza el puntaje y muestra los resultados
+        """
+
+        print("\n" + "-"*40)
+        print(f"Puntaje actual: {self.puntaje_totalJAMG} puntos")
+        print("-"*50)
+
+        while True:
+            try:
+                entrada_longitudJAMG = input("Ingresa la longitud de la contraseña: ")
+                
+                if not entrada_longitudJAMG.isdigit():
+                    raise DatosNoNumericosErrorJAMG()
+                
+                longitud_usuario = int(entrada_longitudJAMG)
+                if longitud_usuario < 8:
+                    raise LongitudInvalidaErrorJAMG()
+                break
+
+            except DatosNoNumericosErrorJAMG as e:
+                print(f"Error: {e}")
+
+            except LongitudInvalidaErrorJAMG as e:
+                print(f"Error: {e}")
+            
+            except Exception as e:
+                print(f"Ha ocurrido un error inesperado: {e}")
+        
+        es_contrasena_validaJAMG = False
+        contrasena_objJAMG = ContrasenaJAMG(longitud_usuario)
+        try:
+
+            contrasena_generadaJAMG = contrasena_objJAMG.generar_contrasenaJAMG()
+
+            es_contrasena_validaJAMG = True
+        except ContrasenaIncorrectaErrorJAMG as e:
+            print(f"Error: {e}")
+            contrasena_generadaJAMG = "[Contraseña inválida]"
+        
+        except Exception as e:
+            print(f"Ha ocurrido un error durante la generación: {e}")
+            contrasena_generadaJAMG = "[Error en la generación de contraseña]"
+
+            return
+        
+        cofreJAMG = CofreJAMG(es_contrasena_validaJAMG)
+        tipo_cofreJAMG, puntos_cofreJAMG = cofreJAMG.obtener_detallesJAMG()
+
+        self.puntaje_totalJAMG += puntos_cofreJAMG
+
+        print("\n" + "="*40)
+        print("Resultados de la ronda")
+        print("="*50)
+        print(f"Contraseña generada: {contrasena_generadaJAMG}")
+        print(f"Tipo de cofre: {tipo_cofreJAMG}")
+        print(f"Puntos otorgados: {puntos_cofreJAMG}")
+        print(f"Puntaje acumulado: {self.puntaje_totalJAMG}")
+        print("="*50)
+    
+    def mostrar_resumen_finalJAMG(self):
+        """
+        Método utilizado para mostrar el resumen final del juego
+        """
+        print("Resumen final")
+        print(f"Puntaje total obtenido en tu aventura: {self.puntaje_totalJAMG}")
+        
+
+    def iniciar(self):
+        """
+        Método para iniciar el juego
+        """
+
+        print("\n" + "="*40)
+        print("Bienvenido, cazador de contraseñas")
+        print("="*50)
+        print("Recuerda que las contraseñas deben ser seguras y cumplir con")
+        print("todos los requisitos para evitar un cofre maldito\n")
+        # Este bucle es para controlar la ejecución del juego
+        jugando = True # Variable de control
+        while jugando:
+
+            self.juego()
+            while True:
+                # Este bucle es para comprobar si el usuario quiere seguir jugando o no y si es así entonces seguir ejecutando el bucle externo que contiene el método juego
+                try:
+                    
+                    continuar = input("\n ¿Quieres seguir jugando? (s/n): ").strip().lower()
+                    # Estructura condicional para comprobar si el usuario quiere seguir jugando o no
+                    if continuar in ('s', 'si', 'sí'):
+                        break
+                    elif continuar in ('n', 'no'):
+                        jugando = False
+                        break
+                    else:
+                        print("Por favor, ingresa 's' (para sí) o 'n' (para no)")              
+
+                except Exception:
+                    # manejo de excepción por si ocurre un error inesperado en la entrada
+                    print("Ha ocurrido un error inesperado. Intenta de nuevo")
+        
+        self.mostrar_resumen_finalJAMG() # Método utilizado cuando se finaliza el juego
+        print("Graicas por jugar, hasta la próximaAA")
+
+    
+# Punto de entrada del programa para ejecutarlo directamente
+if __name__ == "__main__":
+
+
+    juego_cazador = JuegoCazadorJAMG()
+    juego_cazador.iniciar()
